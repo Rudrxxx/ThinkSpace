@@ -193,3 +193,4 @@ export default function SparkFeed() {
 // Added spark functionality
 // Updated feed UI
 // Refactored to text-based feed
+// Added unique messages
