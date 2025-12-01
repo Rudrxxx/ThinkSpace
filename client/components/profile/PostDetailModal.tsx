@@ -18,9 +18,7 @@ const PostDetailModal = ({ post, isOpen, onClose, onCommentAdd, onInteraction }:
 
     // Dummy comments
     const [comments, setComments] = useState([
-        { id: 1, user: "art_lover", text: "This is absolutely stunning! 🎨", time: "2h" },
-        { id: 2, user: "crypto_king", text: "Bullish on this style 🚀", time: "5h" },
-        { id: 3, user: "design_daily", text: "The colors are mesmerizing.", time: "1d" },
+        { id: 1, user: "art_lover", text: "This is absolutely stunning! 🎨", time: "2h" }
     ]);
 
     if (!isOpen || !post) return null;

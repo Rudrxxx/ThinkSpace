@@ -15,23 +15,7 @@ const PostGrid = () => {
             user: "PixelMind",
             userImage: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80",
             stats: { spark: 1200, dim: 50, thoughts: 3, spread: 89 },
-        },
-        {
-            id: 2,
-            image: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=800&q=80",
-            title: "Why I'm Bullish on AI Art",
-            user: "PixelMind",
-            userImage: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80",
-            stats: { spark: 850, dim: 12, thoughts: 3, spread: 20 },
-        },
-        {
-            id: 3,
-            image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
-            title: "Exploring the Metaverse",
-            user: "PixelMind",
-            userImage: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&q=80",
-            stats: { spark: 2500, dim: 100, thoughts: 3, spread: 300 },
-        },
+        }
     ]);
 
     const handleCommentAdd = () => {
