@@ -183,3 +183,4 @@ export default function CategoryPage() {
 // Implemented category logic
 // Added dynamic routing
 // Implemented category logic
+// Added dynamic routing
