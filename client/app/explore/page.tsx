@@ -295,3 +295,4 @@ export default function Explore() {
 // Fixed fresh sparks photos
 // Added search autocomplete
 // Enhanced search UI
+// Initialized explore structure
