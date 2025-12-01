@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Zap, CloudRain, Brain, Share2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -15,77 +15,10 @@ interface InteractionBarProps {
     onInteraction?: (type: string, value: number) => void;
 }
 
+import { useInteractionLogic } from "@/hooks/useInteractionLogic";
+
 const InteractionBar = ({ initialCounts = { spark: 0, dim: 0, thoughts: 0, spread: 0 }, onThoughtsClick, onInteraction }: InteractionBarProps) => {
-    const [counts, setCounts] = useState(initialCounts);
-    const [active, setActive] = useState<{ [key: string]: boolean }>({
-        spark: false,
-        dim: false,
-        thoughts: false,
-        spread: false,
-    });
-
-    React.useEffect(() => {
-        setCounts(initialCounts);
-    }, [initialCounts.spark, initialCounts.dim, initialCounts.thoughts, initialCounts.spread]);
-
-    const handleInteraction = (type: keyof typeof counts) => {
-        if (type === "thoughts") {
-            if (onThoughtsClick) {
-                onThoughtsClick();
-            }
-            return;
-        }
-
-        if (type === "spread") {
-            // Simulate share functionality
-            navigator.clipboard.writeText(window.location.href);
-            alert("Link copied to clipboard!"); // Simple feedback
-
-            // Increment spread count temporarily for visual feedback
-            setCounts((prev) => ({
-                ...prev,
-                spread: prev.spread + 1,
-            }));
-            return;
-        }
-
-        // Handle Spark (Like) and Dim (Dislike)
-        let newActive = { ...active };
-        let newCounts = { ...counts };
-        const isNowActive = !active[type];
-
-        newActive[type] = isNowActive;
-
-        if (type === "spark") {
-            newCounts.spark = isNowActive ? counts.spark + 1 : counts.spark - 1;
-            if (isNowActive && active.dim) {
-                newActive.dim = false;
-                newCounts.dim -= 1;
-            }
-        } else if (type === "dim") {
-            newCounts.dim = isNowActive ? counts.dim + 1 : counts.dim - 1;
-            if (isNowActive && active.spark) {
-                newActive.spark = false;
-                newCounts.spark -= 1;
-            }
-        }
-
-        setActive(newActive);
-        setCounts(newCounts);
-
-        // Notify parent
-        if (onInteraction) {
-            onInteraction(type, newCounts[type]);
-
-            // If mutual exclusivity changed the other one, notify for that too
-            if (type === "spark" && isNowActive && active.dim) {
-                onInteraction("dim", newCounts.dim);
-            }
-            if (type === "dim" && isNowActive && active.spark) {
-                onInteraction("spark", newCounts.spark);
-            }
-        }
-    };
+    const { counts, active, handleInteraction } = useInteractionLogic({ initialCounts, onInteraction });
 
     const buttons = [
         {
@@ -137,7 +70,7 @@ const InteractionBar = ({ initialCounts = { spark: 0, dim: 0, thoughts: 0, sprea
                         key={btn.id}
                         onClick={(e) => {
                             e.stopPropagation();
-                            handleInteraction(btn.id as keyof typeof counts);
+                            handleInteraction(btn.id as any, onThoughtsClick);
                         }}
                         className={cn(
                             "group relative flex flex-col items-center justify-center p-2 rounded-xl border transition-all duration-300 w-full",

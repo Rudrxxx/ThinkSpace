@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import GlassCard from "@/components/ui/GlassCard";
 import { Share2 } from "lucide-react";
 import InteractionBar from "@/components/ui/InteractionBar";
@@ -55,48 +55,18 @@ const VisualCard = ({ post, onThoughtsClick, onInteraction }: PostProps) => (
     </GlassCard>
 );
 
+import { usePostList } from "@/hooks/usePostList";
+
 const Feed = ({ posts: initialPosts }: { posts: any[] }) => {
-    const [posts, setPosts] = useState(initialPosts);
-    const [selectedPost, setSelectedPost] = useState<any>(null);
+    const { posts, selectedPost, setSelectedPost, updatePostStats, incrementThoughts } = usePostList(initialPosts);
 
     const handleCommentAdd = () => {
         if (!selectedPost) return;
-
-        // Update local posts state
-        setPosts(prevPosts => prevPosts.map(p => {
-            if (p._id === selectedPost._id) {
-                return {
-                    ...p,
-                    thoughts: (p.thoughts || 0) + 1
-                };
-            }
-            return p;
-        }));
-
-        // Update selectedPost state to reflect change immediately in modal if needed (though modal uses its own comments list, the parent needs to know for the count)
-        setSelectedPost((prev: any) => ({
-            ...prev,
-            thoughts: (prev.thoughts || 0) + 1
-        }));
+        incrementThoughts(selectedPost._id);
     };
 
     const handleInteraction = (postId: string, type: string, value: number) => {
-        setPosts(prevPosts => prevPosts.map(p => {
-            if (p._id === postId) {
-                return {
-                    ...p,
-                    [type]: value // For Feed posts, stats are top-level properties like 'likes', 'dim'
-                };
-            }
-            return p;
-        }));
-
-        if (selectedPost && selectedPost._id === postId) {
-            setSelectedPost((prev: any) => ({
-                ...prev,
-                [type]: value
-            }));
-        }
+        updatePostStats(postId, type, value);
     };
 
     return (

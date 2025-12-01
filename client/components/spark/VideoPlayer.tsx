@@ -17,58 +17,19 @@ interface VideoProps {
 import PostDetailModal from "@/components/profile/PostDetailModal";
 import { useState } from "react";
 
+import { useInteractionLogic } from "@/hooks/useInteractionLogic";
+
 const VideoCard = ({ video }: { video: VideoProps }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [counts, setCounts] = useState({
-        spark: video.likes,
-        dim: 12,
-        thoughts: 124,
-        spread: 89
+
+    const { counts, active, handleInteraction, setCounts } = useInteractionLogic({
+        initialCounts: {
+            spark: video.likes,
+            dim: 12,
+            thoughts: 124,
+            spread: 89
+        }
     });
-    const [active, setActive] = useState<{ [key: string]: boolean }>({
-        spark: false,
-        dim: false,
-        thoughts: false,
-        spread: false
-    });
-
-    const handleInteraction = (type: keyof typeof counts) => {
-        if (type === "thoughts") {
-            setIsModalOpen(true);
-            return;
-        }
-
-        if (type === "spread") {
-            navigator.clipboard.writeText(window.location.href);
-            alert("Link copied to clipboard!");
-            setCounts(prev => ({ ...prev, spread: prev.spread + 1 }));
-            return;
-        }
-
-        // Handle Spark/Dim mutual exclusivity
-        let newActive = { ...active };
-        let newCounts = { ...counts };
-        const isNowActive = !active[type];
-
-        newActive[type] = isNowActive;
-
-        if (type === "spark") {
-            newCounts.spark = isNowActive ? counts.spark + 1 : counts.spark - 1;
-            if (isNowActive && active.dim) {
-                newActive.dim = false;
-                newCounts.dim -= 1;
-            }
-        } else if (type === "dim") {
-            newCounts.dim = isNowActive ? counts.dim + 1 : counts.dim - 1;
-            if (isNowActive && active.spark) {
-                newActive.spark = false;
-                newCounts.spark -= 1;
-            }
-        }
-
-        setActive(newActive);
-        setCounts(newCounts);
-    };
 
     return (
         <div className="h-full w-full snap-start relative flex items-center justify-center bg-black">
@@ -121,7 +82,7 @@ const VideoCard = ({ video }: { video: VideoProps }) => {
                             count={counts.thoughts}
                             label="Thoughts"
                             color="text-pink-500"
-                            onClick={() => handleInteraction("thoughts")}
+                            onClick={() => handleInteraction("thoughts", () => setIsModalOpen(true))}
                         />
                         <ActionButton
                             icon={Share2}

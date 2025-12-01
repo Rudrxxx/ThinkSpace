@@ -1,14 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import GlassCard from "@/components/ui/GlassCard";
 import { Zap, CloudRain, Brain, Share2 } from "lucide-react";
 import PostDetailModal from "./PostDetailModal";
 import InteractionBar from "@/components/ui/InteractionBar";
 
-const PostGrid = () => {
-    const [selectedPost, setSelectedPost] = useState<any>(null);
+import { usePostList } from "@/hooks/usePostList";
 
-    // Dummy data for visual representation
-    const [posts, setPosts] = useState([
+const PostGrid = () => {
+    const { posts, selectedPost, setSelectedPost, updatePostStats, incrementThoughts } = usePostList([
         {
             id: 1,
             image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
@@ -37,52 +36,11 @@ const PostGrid = () => {
 
     const handleCommentAdd = () => {
         if (!selectedPost) return;
-
-        setPosts(prevPosts => prevPosts.map(p => {
-            if (p.id === selectedPost.id) {
-                return {
-                    ...p,
-                    stats: {
-                        ...p.stats,
-                        thoughts: p.stats.thoughts + 1
-                    }
-                };
-            }
-            return p;
-        }));
-
-        setSelectedPost((prev: any) => ({
-            ...prev,
-            stats: {
-                ...prev.stats,
-                thoughts: prev.stats.thoughts + 1
-            }
-        }));
+        incrementThoughts(selectedPost.id);
     };
 
     const handleInteraction = (postId: number, type: string, value: number) => {
-        setPosts(prevPosts => prevPosts.map(p => {
-            if (p.id === postId) {
-                return {
-                    ...p,
-                    stats: {
-                        ...p.stats,
-                        [type]: value
-                    }
-                };
-            }
-            return p;
-        }));
-
-        if (selectedPost && selectedPost.id === postId) {
-            setSelectedPost((prev: any) => ({
-                ...prev,
-                stats: {
-                    ...prev.stats,
-                    [type]: value
-                }
-            }));
-        }
+        updatePostStats(postId, type, value);
     };
 
     return (
