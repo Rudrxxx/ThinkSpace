@@ -296,3 +296,4 @@ export default function Explore() {
 // Added search autocomplete
 // Enhanced search UI
 // Initialized explore structure
+// Fixed trending photos
