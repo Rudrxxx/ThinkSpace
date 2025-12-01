@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { X, MoreHorizontal, Send } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import InteractionBar from "@/components/ui/InteractionBar";
 
 interface PostDetailModalProps {
@@ -18,7 +17,9 @@ const PostDetailModal = ({ post, isOpen, onClose, onCommentAdd, onInteraction }:
 
     // Dummy comments
     const [comments, setComments] = useState([
-        { id: 1, user: "art_lover", text: "This is absolutely stunning! 🎨", time: "2h" }
+        { id: 1, user: "art_lover", text: "This is absolutely stunning! 🎨", time: "2h" },
+        { id: 2, user: "crypto_king", text: "Bullish on this style 🚀", time: "5h" },
+        { id: 3, user: "design_daily", text: "The colors are mesmerizing.", time: "1d" },
     ]);
 
     if (!isOpen || !post) return null;
@@ -31,25 +32,17 @@ const PostDetailModal = ({ post, isOpen, onClose, onCommentAdd, onInteraction }:
     };
 
     return (
-        <AnimatePresence>
+        <>
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8">
                     {/* Backdrop */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                    <div
                         onClick={onClose}
-                        className="absolute inset-0 bg-black/60 backdrop-blur-md"
+                        className="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity"
                     />
 
                     {/* Modal Content */}
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="relative w-full max-w-6xl h-[90vh] bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row"
-                    >
+                    <div className="relative w-full max-w-6xl h-[90vh] bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row animate-in fade-in zoom-in-95 duration-200">
                         {/* Close Button */}
                         <button
                             onClick={onClose}
@@ -161,10 +154,10 @@ const PostDetailModal = ({ post, isOpen, onClose, onCommentAdd, onInteraction }:
                                 </div>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             )}
-        </AnimatePresence>
+        </>
     );
 };
 
