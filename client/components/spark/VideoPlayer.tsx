@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Heart, MessageCircle, Share2, Music2 } from "lucide-react";
+import { Zap, CloudRain, Brain, Share2, Music2 } from "lucide-react";
 
 interface VideoProps {
     id: string;
@@ -14,7 +14,62 @@ interface VideoProps {
     likes: number;
 }
 
+import PostDetailModal from "@/components/profile/PostDetailModal";
+import { useState } from "react";
+
 const VideoCard = ({ video }: { video: VideoProps }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [counts, setCounts] = useState({
+        spark: video.likes,
+        dim: 12,
+        thoughts: 124,
+        spread: 89
+    });
+    const [active, setActive] = useState<{ [key: string]: boolean }>({
+        spark: false,
+        dim: false,
+        thoughts: false,
+        spread: false
+    });
+
+    const handleInteraction = (type: keyof typeof counts) => {
+        if (type === "thoughts") {
+            setIsModalOpen(true);
+            return;
+        }
+
+        if (type === "spread") {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Link copied to clipboard!");
+            setCounts(prev => ({ ...prev, spread: prev.spread + 1 }));
+            return;
+        }
+
+        // Handle Spark/Dim mutual exclusivity
+        let newActive = { ...active };
+        let newCounts = { ...counts };
+        const isNowActive = !active[type];
+
+        newActive[type] = isNowActive;
+
+        if (type === "spark") {
+            newCounts.spark = isNowActive ? counts.spark + 1 : counts.spark - 1;
+            if (isNowActive && active.dim) {
+                newActive.dim = false;
+                newCounts.dim -= 1;
+            }
+        } else if (type === "dim") {
+            newCounts.dim = isNowActive ? counts.dim + 1 : counts.dim - 1;
+            if (isNowActive && active.spark) {
+                newActive.spark = false;
+                newCounts.spark -= 1;
+            }
+        }
+
+        setActive(newActive);
+        setCounts(newCounts);
+    };
+
     return (
         <div className="h-full w-full snap-start relative flex items-center justify-center bg-black">
             <video
@@ -45,22 +100,72 @@ const VideoCard = ({ video }: { video: VideoProps }) => {
                     </div>
 
                     <div className="flex flex-col gap-6 mb-20 md:mb-8">
-                        <ActionButton icon={Heart} count={video.likes} />
-                        <ActionButton icon={MessageCircle} count={124} />
-                        <ActionButton icon={Share2} count="Share" />
+                        <ActionButton
+                            icon={Zap}
+                            count={counts.spark}
+                            label="Spark"
+                            color="text-cyan-400"
+                            isActive={active.spark}
+                            onClick={() => handleInteraction("spark")}
+                        />
+                        <ActionButton
+                            icon={CloudRain}
+                            count={counts.dim}
+                            label="Dim"
+                            color="text-blue-400"
+                            isActive={active.dim}
+                            onClick={() => handleInteraction("dim")}
+                        />
+                        <ActionButton
+                            icon={Brain}
+                            count={counts.thoughts}
+                            label="Thoughts"
+                            color="text-pink-500"
+                            onClick={() => handleInteraction("thoughts")}
+                        />
+                        <ActionButton
+                            icon={Share2}
+                            count={counts.spread}
+                            label="Spread"
+                            color="text-green-400"
+                            onClick={() => handleInteraction("spread")}
+                        />
                     </div>
                 </div>
             </div>
+
+            <PostDetailModal
+                post={{
+                    ...video,
+                    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80", // Placeholder image for modal as video modal might be different, but using same modal for consistency
+                    userImage: video.user.image,
+                    user: video.user,
+                    title: video.description,
+                    stats: counts
+                }}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onCommentAdd={() => setCounts(prev => ({ ...prev, thoughts: prev.thoughts + 1 }))}
+                onInteraction={(type, value) => {
+                    setCounts(prev => ({ ...prev, [type]: value }));
+                    // Also update active state if needed, but counts is enough for display. 
+                    // To keep active state in sync would require more complex logic or passing active state back.
+                    // For now, let's assume modal interaction updates counts.
+                }}
+            />
         </div>
     );
 };
 
-const ActionButton = ({ icon: Icon, count }: { icon: any, count: number | string }) => (
-    <button className="flex flex-col items-center gap-1 group">
-        <div className="p-3 bg-white/20 backdrop-blur-md rounded-full group-hover:bg-white/40 transition-colors border border-white/20">
-            <Icon size={28} className="text-white" />
+const ActionButton = ({ icon: Icon, count, label, color, onClick, isActive }: { icon: any, count: number | string, label: string, color: string, onClick?: () => void, isActive?: boolean }) => (
+    <button
+        onClick={onClick}
+        className="flex flex-col items-center gap-1 group"
+    >
+        <div className={`p-3 bg-white/10 backdrop-blur-md rounded-full transition-all duration-300 border border-white/10 ${isActive ? `bg-white/30 scale-110 ${color}` : 'group-hover:bg-white/20'}`}>
+            <Icon size={28} className={`transition-colors ${isActive ? 'fill-current' : 'opacity-90'} ${isActive ? color : 'text-white'}`} />
         </div>
-        <span className="text-xs font-medium text-white">{count}</span>
+        <span className="text-xs font-bold text-white">{count}</span>
     </button>
 );
 
