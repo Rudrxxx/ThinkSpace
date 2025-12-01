@@ -299,3 +299,4 @@ export default function Explore() {
 // Fixed trending photos
 // Fixed fresh sparks photos
 // Added search autocomplete
+// Enhanced search UI
