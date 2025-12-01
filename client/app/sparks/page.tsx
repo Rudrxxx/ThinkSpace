@@ -194,3 +194,4 @@ export default function SparkFeed() {
 // Updated feed UI
 // Refactored to text-based feed
 // Added unique messages
+// Implemented infinite scroll
