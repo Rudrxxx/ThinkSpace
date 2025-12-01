@@ -298,3 +298,4 @@ export default function Explore() {
 // Initialized explore structure
 // Fixed trending photos
 // Fixed fresh sparks photos
+// Added search autocomplete
