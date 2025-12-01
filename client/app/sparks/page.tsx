@@ -197,3 +197,4 @@ export default function SparkFeed() {
 // Implemented infinite scroll
 // Added user numbering
 // Added spark functionality
+// Updated feed UI
