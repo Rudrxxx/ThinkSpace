@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import MainLayout from "@/components/layout/MainLayout";
 import GlassCard from "@/components/ui/GlassCard";
 import { Zap, Users, Settings, UserPlus } from "lucide-react";
@@ -82,11 +83,40 @@ const ProfileContent = ({ user }) => {
                 });
                 
                 if (profile._id) {
-                    const userSpaces = await api.getUserSpaces(profile._id);
-                    setSpaces(userSpaces || []);
+                    try {
+                        const userSpaces = await api.getUserSpaces(profile._id);
+                        setSpaces(userSpaces || []);
+                    } catch (spaceError) {
+                        console.warn('Could not fetch spaces:', spaceError);
+                        setSpaces([]);
+                    }
                 }
             } catch (error) {
-                console.error('Failed to fetch profile:', error);
+                console.warn('Using fallback profile data:', error.message);
+                // Try to load from localStorage
+                const savedProfile = localStorage.getItem(`profile_${user.username || user.firstName}`);
+                if (savedProfile) {
+                    const parsed = JSON.parse(savedProfile);
+                    setProfileData({
+                        name: parsed.name || user.fullName || 'User',
+                        bio: parsed.bio || 'Digital explorer & creator. Love to contribute to new projects! ☁️✨',
+                        location: parsed.location || '',
+                        website: parsed.website || '',
+                        postCount: 0,
+                        followerCount: 0,
+                        followingCount: 0
+                    });
+                } else {
+                    setProfileData({
+                        name: user.fullName || 'User',
+                        bio: 'Digital explorer & creator. Love to contribute to new projects! ☁️✨',
+                        postCount: 0,
+                        followerCount: 0,
+                        followingCount: 0
+                    });
+                }
+                setStats({ postCount: 0, followerCount: 0, followingCount: 0 });
+                setSpaces([]);
             }
         };
         fetchProfileData();
@@ -172,30 +202,51 @@ const ProfileContent = ({ user }) => {
                     <div className="flex flex-col md:flex-row gap-8">
                         <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
-                                <h1 className="text-2xl md:text-3xl font-bold text-slate-900">{user.fullName}</h1>
+                                <h1 className="text-2xl md:text-3xl font-bold text-slate-900">{profileData?.name || user.fullName}</h1>
                                 <Zap size={20} className="text-blue-500 fill-current" />
                             </div>
                             <p className="text-slate-500 font-medium mb-4">@{user.username || user.firstName?.toLowerCase()}</p>
                             <p className="text-slate-700 max-w-lg leading-relaxed text-base">
-                                Digital explorer & creator. Love to contribute to new projects! ☁️✨<br />Building the future of thought sharing.
+                                {profileData?.bio || "Digital explorer & creator. Love to contribute to new projects! ☁️✨"}
                             </p>
+                            
+                            {profileData?.location && (
+                                <p className="text-slate-600 text-sm mt-2 flex items-center gap-1">
+                                    <span>📍</span> {profileData.location}
+                                </p>
+                            )}
+                            
+                            {profileData?.website && (
+                                <p className="text-slate-600 text-sm mt-1">
+                                    <a href={profileData.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                                        🌐 {profileData.website}
+                                    </a>
+                                </p>
+                            )}
 
                             <div className="flex gap-4 mt-4 text-sm text-slate-500 font-medium">
                                 <span className="flex items-center gap-1 hover:text-[var(--color-primary)] cursor-pointer transition-colors"><Zap size={16} /> {spaces.length} spaces</span>
                                 <span className="flex items-center gap-1 hover:text-[var(--color-primary)] cursor-pointer transition-colors"><Users size={16} /> {stats.followerCount} thinkers</span>
                             </div>
-                            {!isOwnProfile && (
-                                <button
-                                    onClick={handleFollow}
-                                    className={`hidden md:block mt-6 py-2 px-6 rounded-full font-bold transition-all ${
-                                        isFollowing
-                                            ? 'bg-slate-200 text-slate-900 hover:bg-slate-300'
-                                            : 'bg-[#1B3C53] text-white hover:bg-[#234C68]'
-                                    }`}
-                                >
-                                    {isFollowing ? 'Following' : 'Follow'}
-                                </button>
-                            )}
+                            <div className="hidden md:flex gap-3 mt-6">
+                                {isOwnProfile ? (
+                                    <Link href="/settings" className="py-2 px-6 bg-slate-200 text-slate-900 hover:bg-slate-300 rounded-full font-bold transition-all flex items-center gap-2">
+                                        <Settings size={16} />
+                                        Edit Profile
+                                    </Link>
+                                ) : (
+                                    <button
+                                        onClick={handleFollow}
+                                        className={`py-2 px-6 rounded-full font-bold transition-all ${
+                                            isFollowing
+                                                ? 'bg-slate-200 text-slate-900 hover:bg-slate-300'
+                                                : 'bg-[#1B3C53] text-white hover:bg-[#234C68]'
+                                        }`}
+                                    >
+                                        {isFollowing ? 'Following' : 'Follow'}
+                                    </button>
+                                )}
+                            </div>
                         </div>
 
                         <div className="flex md:hidden flex-col gap-4">
@@ -213,7 +264,12 @@ const ProfileContent = ({ user }) => {
                                     <span className="text-sm text-slate-500 font-medium">Followers</span>
                                 </div>
                             </div>
-                            {!isOwnProfile && (
+                            {isOwnProfile ? (
+                                <Link href="/settings" className="w-full py-2 px-4 bg-slate-200 text-slate-900 hover:bg-slate-300 rounded-full font-bold transition-all text-center flex items-center justify-center gap-2">
+                                    <Settings size={16} />
+                                    Edit Profile
+                                </Link>
+                            ) : (
                                 <button
                                     onClick={handleFollow}
                                     className={`w-full py-2 px-4 rounded-full font-bold transition-all ${

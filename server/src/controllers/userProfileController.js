@@ -28,16 +28,32 @@ export const getUserProfile = async (req, res) => {
 export const updateUserProfile = async (req, res) => {
   try {
     const userId = req.userId;
-    const { name, bio, image } = req.body;
+    const { name, bio, image, location, website, handle } = req.body;
 
-    const user = await User.findById(userId);
+    // Try to find user by userId first, then by handle
+    let user = await User.findOne({ 
+      $or: [{ _id: userId }, { handle: handle || name?.toLowerCase() }] 
+    });
+
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      // Create new user if not found
+      user = new User({
+        name: name || 'User',
+        handle: handle || name?.toLowerCase() || 'user',
+        password: 'clerk-managed', // Placeholder since Clerk manages auth
+        bio: bio || '',
+        image: image || '',
+        location: location || '',
+        website: website || ''
+      });
+    } else {
+      // Update existing user
+      if (name) user.name = name;
+      if (bio !== undefined) user.bio = bio;
+      if (image) user.image = image;
+      if (location !== undefined) user.location = location;
+      if (website !== undefined) user.website = website;
     }
-
-    if (name) user.name = name;
-    if (bio !== undefined) user.bio = bio;
-    if (image) user.image = image;
 
     await user.save();
     res.json(user);

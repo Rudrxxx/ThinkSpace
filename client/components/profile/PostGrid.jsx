@@ -20,10 +20,11 @@ const PostGrid = () => {
                 const handle = user?.username || user?.firstName?.toLowerCase();
                 if (handle) {
                     const userPosts = await api.getUserPosts(handle);
-                    setPosts(userPosts || []);
+                    setPosts(Array.isArray(userPosts) ? userPosts : []);
                 }
             } catch (error) {
                 console.error('Failed to fetch posts:', error);
+                setPosts([]);
             } finally {
                 setLoading(false);
             }
@@ -64,14 +65,14 @@ const PostGrid = () => {
         return <div className="text-center py-10 text-slate-500">Loading posts...</div>;
     }
 
-    if (posts.length === 0) {
+    if (!Array.isArray(posts) || posts.length === 0) {
         return <div className="text-center py-10 text-slate-500">No posts yet.</div>;
     }
 
     return (
         <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                {posts.map((post) => (
+                {Array.isArray(posts) && posts.map((post) => (
                     <GlassCard
                         key={post._id}
                         onClick={() => setSelectedPost(post)}
