@@ -1,15 +1,15 @@
 "use server";
-
+const API = process.env.NEXT_PUBLIC_API_URL;
 export async function getPosts() {
     try {
-        const res = await fetch('http://localhost:5001/api/feed/home', {
+        const res = await fetch(`${API}/feed/home`, {
             cache: 'no-store',
             next: { revalidate: 0 }
         });
 
         if (!res.ok) {
             console.log('Home feed failed, falling back to all posts');
-            const fallback = await fetch('http://localhost:5001/api/posts', {
+            const fallback = await fetch(`${API}/posts`, {
                 cache: 'no-store',
                 next: { revalidate: 0 }
             });
