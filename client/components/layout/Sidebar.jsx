@@ -12,13 +12,13 @@ const SidebarSection = ({ title, children, defaultOpen = true }) => {
     const [isOpen, setIsOpen] = useState(defaultOpen);
 
     return (
-        <div className="mb-2">
+        <div className="mb-4">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center justify-between w-full px-4 py-2 text-xs font-bold text-[#1B3C53] uppercase tracking-wider hover:bg-[#D0D0D0] transition-colors"
+                className="flex items-center justify-between w-full px-4 py-2 text-[10px] font-extrabold text-gray-500 uppercase tracking-widest hover:text-primary transition-colors duration-300"
             >
                 <span>{title}</span>
-                {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                {isOpen ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
             </button>
             <AnimatePresence>
                 {isOpen && (
@@ -26,7 +26,7 @@ const SidebarSection = ({ title, children, defaultOpen = true }) => {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden"
+                        className="overflow-hidden space-y-1"
                     >
                         {children}
                     </motion.div>
@@ -39,13 +39,22 @@ const SidebarSection = ({ title, children, defaultOpen = true }) => {
 const SidebarItem = ({ icon: Icon, label, href, isActive }) => (
     <Link href={href}>
         <div className={cn(
-            "flex items-center gap-3 px-4 py-2 mx-2 rounded-lg transition-colors text-sm font-medium",
+            "group flex items-center gap-3 px-4 py-2.5 mx-2 rounded-xl transition-all duration-300 relative overflow-hidden",
             isActive
-                ? "bg-[#456882] text-white"
-                : "text-[#1B3C53] hover:bg-[#D0D0D0]"
+                ? "bg-primary/10 text-primary shadow-[inset_0_0_10px_rgba(0,243,255,0.05)] border border-primary/20"
+                : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
         )}>
-            <Icon size={20} className={cn(isActive ? "text-white" : "text-[#234C68]")} />
-            <span>{label}</span>
+            {isActive && (
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary shadow-[0_0_10px_var(--color-primary)]"></div>
+            )}
+            <Icon size={20} className={cn(
+                "transition-colors duration-300",
+                isActive ? "text-primary drop-shadow-[0_0_5px_var(--color-primary)]" : "text-gray-500 group-hover:text-white"
+            )} />
+            <span className={cn("font-medium relative z-10", isActive && "font-semibold")}>{label}</span>
+
+            {/* Hover Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         </div>
     </Link>
 );
@@ -65,10 +74,10 @@ const Sidebar = ({ isOpen, onClose }) => {
             )}
 
             <aside className={cn(
-                "fixed left-0 top-16 bottom-0 w-[270px] bg-[#E3E3E3] border-r border-[#456882] overflow-y-auto z-40 transition-transform duration-300 ease-in-out md:translate-x-0",
-                isOpen ? "translate-x-0" : "-translate-x-full"
+                "fixed left-4 top-24 bottom-4 w-[260px] rounded-2xl glass-panel border border-white/10 overflow-hidden z-40 transition-transform duration-300 ease-in-out md:translate-x-0",
+                isOpen ? "translate-x-0" : "-translate-x-[120%]"
             )}>
-                <div className="py-4">
+                <div className="h-full overflow-y-auto py-6 px-3 scrollbar-hide">
                     <SidebarSection title="Feeds">
                         <SidebarItem icon={Home} label="Home" href="/" isActive={pathname === "/"} />
                         <SidebarItem icon={Zap} label="Sparks" href="/sparks" isActive={pathname === "/sparks"} />
@@ -85,20 +94,20 @@ const Sidebar = ({ isOpen, onClose }) => {
                         <SidebarItem icon={Settings} label="Settings" href="/settings" isActive={pathname === "/settings"} />
                     </SidebarSection>
 
-                    <div className="mt-4 px-4 pt-4 border-t border-[#456882]">
+                    <div className="mt-8 px-2 pt-6 border-t border-white/10">
                         {isSignedIn ? (
                             <SignOutButton>
-                                <button className="flex items-center gap-3 w-full px-4 py-2 text-sm font-medium text-[#1B3C53] hover:bg-red-100 hover:text-red-700 rounded-lg transition-colors">
-                                    <LogOut size={20} />
+                                <button className="group flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-gray-400 hover:text-white hover:bg-red-500/10 rounded-xl transition-all duration-300">
+                                    <LogOut size={20} className="group-hover:text-red-400 transition-colors" />
                                     <span>Log Out</span>
                                 </button>
                             </SignOutButton>
                         ) : (
-                            <div className="flex flex-col gap-2">
-                                <Link href="/sign-in" className="w-full py-2 text-center text-sm font-bold text-white bg-[#1B3C53] rounded-full hover:bg-[#234C68] transition-colors">
+                            <div className="flex flex-col gap-3">
+                                <Link href="/sign-in" className="w-full py-2.5 text-center text-sm font-bold text-black bg-primary rounded-xl hover:shadow-[0_0_15px_var(--color-primary)] transition-all duration-300">
                                     Log In
                                 </Link>
-                                <Link href="/sign-up" className="w-full py-2 text-center text-sm font-bold text-[#1B3C53] border border-[#1B3C53] rounded-full hover:bg-[#1B3C53]/10 transition-colors">
+                                <Link href="/sign-up" className="w-full py-2.5 text-center text-sm font-bold text-primary border border-primary/50 rounded-xl hover:bg-primary/10 transition-colors">
                                     Sign Up
                                 </Link>
                             </div>

@@ -25,9 +25,10 @@ const ChatLayout = () => {
     const loadConversations = async () => {
         try {
             const data = await fetchConversations(user.id);
-            setConversations(data);
+            setConversations(data.conversations || []);
         } catch (error) {
             console.error("Failed to load conversations:", error);
+            setConversations([]);
         } finally {
             setLoading(false);
         }

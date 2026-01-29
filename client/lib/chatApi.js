@@ -1,52 +1,55 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
 
-// Fetch all conversations for a user
 export const fetchConversations = async (userId) => {
-    try {
-        const response = await fetch(`${API_URL}/conversations?userId=${userId}`);
-        if (!response.ok) throw new Error('Failed to fetch conversations');
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching conversations:', error);
-        throw error;
-    }
+    return {
+        conversations: [
+            {
+                _id: '1',
+                participants: [
+                    { _id: userId, name: 'You' },
+                    { _id: '2', name: 'Alex Chen' }
+                ],
+                lastMessage: {
+                    content: 'Hey! How are you doing?',
+                    createdAt: new Date().toISOString(),
+                    sender: { name: 'Alex Chen' }
+                },
+                unreadCount: 2
+            }
+        ]
+    };
 };
 
 // Fetch messages for a conversation
 export const fetchMessages = async (conversationId, userId, limit = 50) => {
-    try {
-        const response = await fetch(
-            `${API_URL}/messages/${conversationId}?userId=${userId}&limit=${limit}`
-        );
-        if (!response.ok) throw new Error('Failed to fetch messages');
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching messages:', error);
-        throw error;
-    }
+    return {
+        messages: [
+            {
+                _id: '1',
+                content: 'Hey! How are you doing?',
+                sender: { _id: '2', name: 'Alex Chen' },
+                createdAt: new Date().toISOString()
+            },
+            {
+                _id: '2',
+                content: 'I\'m doing great! Just working on some new projects.',
+                sender: { _id: userId, name: 'You' },
+                createdAt: new Date(Date.now() + 60000).toISOString()
+            }
+        ]
+    };
 };
 
 // Send a message
 export const sendMessage = async (conversationId, senderId, content, type = 'text') => {
-    try {
-        const response = await fetch(`${API_URL}/messages`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                conversationId,
-                senderId,
-                content,
-                type,
-            }),
-        });
-        if (!response.ok) throw new Error('Failed to send message');
-        return await response.json();
-    } catch (error) {
-        console.error('Error sending message:', error);
-        throw error;
-    }
+    return {
+        message: {
+            _id: Date.now().toString(),
+            content,
+            sender: { _id: senderId, name: 'You' },
+            createdAt: new Date().toISOString()
+        }
+    };
 };
 
 // Create a new conversation

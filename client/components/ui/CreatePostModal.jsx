@@ -81,14 +81,14 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center p-4 pt-20">
-            <div className="bg-white rounded-xl w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-start justify-center p-4 pt-20">
+            <div className="ultra-glass rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-2xl border border-white/20">
                 {/* Header */}
-                <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex justify-between items-center">
-                    <h2 className="text-2xl font-bold text-[#1B3C53]">Create post</h2>
+                <div className="sticky top-0 bg-black/60 backdrop-blur-sm border-b border-white/10 p-6 flex justify-between items-center">
+                    <h2 className="text-2xl font-bold text-white">Create post</h2>
                     <div className="flex items-center gap-4">
-                        <span className="text-sm text-gray-500">Drafts</span>
-                        <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                        <span className="text-sm text-gray-400">Drafts</span>
+                        <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
                             <X size={24} />
                         </button>
                     </div>
@@ -99,7 +99,7 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
                     <select
                         value={community}
                         onChange={(e) => setCommunity(e.target.value)}
-                        className="w-full px-4 py-3 bg-[#E3E3E3] rounded-full text-[#1B3C53] font-medium hover:bg-[#D0D0D0] transition-colors appearance-none cursor-pointer"
+                        className="w-full px-4 py-3 bg-white/10 rounded-full text-white font-medium hover:bg-white/20 transition-colors appearance-none cursor-pointer border border-white/20"
                     >
                         <option value="">Select a community</option>
                         <option value="general">General</option>
@@ -109,15 +109,15 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
                     </select>
 
                     {/* Tabs */}
-                    <div className="flex gap-8 border-b border-gray-200">
+                    <div className="flex gap-8 border-b border-white/20">
                         {["text", "images & video", "link", "poll"].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`pb-3 font-medium transition-colors capitalize ${
                                     activeTab === tab
-                                        ? "text-[#1B3C53] border-b-2 border-[#1B3C53]"
-                                        : "text-gray-500 hover:text-[#1B3C53]"
+                                        ? "text-cyan-400 border-b-2 border-cyan-400"
+                                        : "text-gray-400 hover:text-white"
                                 }`}
                             >
                                 {tab}
@@ -132,95 +132,95 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
                             placeholder="Title*"
                             value={title}
                             onChange={(e) => setTitle(e.target.value.slice(0, 300))}
-                            className="w-full p-4 border border-[#456882]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B3C53] text-[#1B3C53] placeholder-gray-400"
+                            className="w-full p-4 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 text-white placeholder-gray-400"
                         />
-                        <div className="text-right text-sm text-gray-500 mt-2">{title.length}/300</div>
+                        <div className="text-right text-sm text-gray-400 mt-2">{title.length}/300</div>
                     </div>
 
                     {/* Tags */}
-                    <button className="px-4 py-2 bg-[#E3E3E3] text-[#456882] rounded-lg hover:bg-[#D0D0D0] transition-colors font-medium">
+                    <button className="px-4 py-2 bg-white/10 text-gray-300 rounded-lg hover:bg-white/20 transition-colors font-medium border border-white/20">
                         Add tags
                     </button>
 
                     {/* Body Text */}
                     <div>
-                        <div className="flex gap-2 mb-3 p-3 bg-gray-50 rounded-lg border border-gray-200 flex-wrap items-center">
+                        <div className="flex gap-2 mb-3 p-3 bg-white/5 rounded-lg border border-white/10 flex-wrap items-center">
                             <button
                                 onClick={() => insertMarkdown("**", "**")}
-                                className="p-2 hover:bg-gray-200 rounded text-sm font-medium text-gray-700"
+                                className="p-2 hover:bg-white/10 rounded text-sm font-medium text-gray-300 hover:text-white transition-colors"
                                 title="Bold"
                             >
                                 <Bold size={18} />
                             </button>
                             <button
                                 onClick={() => insertMarkdown("*", "*")}
-                                className="p-2 hover:bg-gray-200 rounded text-sm font-medium text-gray-700"
+                                className="p-2 hover:bg-white/10 rounded text-sm font-medium text-gray-300 hover:text-white transition-colors"
                                 title="Italic"
                             >
                                 <Italic size={18} />
                             </button>
                             <button
                                 onClick={() => insertMarkdown("~~", "~~")}
-                                className="p-2 hover:bg-gray-200 rounded text-sm font-medium text-gray-700"
+                                className="p-2 hover:bg-white/10 rounded text-sm font-medium text-gray-300 hover:text-white transition-colors"
                                 title="Strikethrough"
                             >
                                 <span className="line-through">S</span>
                             </button>
                             <button
                                 onClick={() => insertMarkdown("# ")}
-                                className="p-2 hover:bg-gray-200 rounded text-sm font-medium text-gray-700"
+                                className="p-2 hover:bg-white/10 rounded text-sm font-medium text-gray-300 hover:text-white transition-colors"
                                 title="Heading"
                             >
                                 <span className="font-bold">H</span>
                             </button>
-                            <div className="w-px h-6 bg-gray-300"></div>
+                            <div className="w-px h-6 bg-white/20"></div>
                             <button
                                 onClick={() => insertMarkdown("[", "](url)")}
-                                className="p-2 hover:bg-gray-200 rounded text-sm font-medium text-gray-700"
+                                className="p-2 hover:bg-white/10 rounded text-sm font-medium text-gray-300 hover:text-white transition-colors"
                                 title="Link"
                             >
                                 <Link2 size={18} />
                             </button>
                             <button
                                 onClick={() => fileInputRef.current?.click()}
-                                className="p-2 hover:bg-gray-200 rounded text-sm font-medium text-gray-700"
+                                className="p-2 hover:bg-white/10 rounded text-sm font-medium text-gray-300 hover:text-white transition-colors"
                                 title="Upload Image"
                             >
                                 <Image size={18} />
                             </button>
                             <button
                                 onClick={() => insertMarkdown("[video](", ")")}
-                                className="p-2 hover:bg-gray-200 rounded text-sm font-medium text-gray-700"
+                                className="p-2 hover:bg-white/10 rounded text-sm font-medium text-gray-300 hover:text-white transition-colors"
                                 title="Video"
                             >
                                 <Video size={18} />
                             </button>
-                            <div className="w-px h-6 bg-gray-300"></div>
+                            <div className="w-px h-6 bg-white/20"></div>
                             <button
                                 onClick={() => insertMarkdown("- ")}
-                                className="p-2 hover:bg-gray-200 rounded text-sm font-medium text-gray-700"
+                                className="p-2 hover:bg-white/10 rounded text-sm font-medium text-gray-300 hover:text-white transition-colors"
                                 title="List"
                             >
                                 <List size={18} />
                             </button>
                             <button
                                 onClick={() => insertMarkdown("> ")}
-                                className="p-2 hover:bg-gray-200 rounded text-sm font-medium text-gray-700"
+                                className="p-2 hover:bg-white/10 rounded text-sm font-medium text-gray-300 hover:text-white transition-colors"
                                 title="Quote"
                             >
                                 <Quote size={18} />
                             </button>
                             <button
                                 onClick={() => insertMarkdown("```\n", "\n```")}
-                                className="p-2 hover:bg-gray-200 rounded text-sm font-medium text-gray-700"
+                                className="p-2 hover:bg-white/10 rounded text-sm font-medium text-gray-300 hover:text-white transition-colors"
                                 title="Code Block"
                             >
                                 <Code size={18} />
                             </button>
-                            <div className="w-px h-6 bg-gray-300"></div>
+                            <div className="w-px h-6 bg-white/20"></div>
                             <button
                                 onClick={() => setBody(body.slice(0, -1))}
-                                className="p-2 hover:bg-gray-200 rounded text-sm font-medium text-gray-700 ml-auto"
+                                className="p-2 hover:bg-white/10 rounded text-sm font-medium text-gray-300 hover:text-white transition-colors ml-auto"
                                 title="Undo"
                             >
                                 <Undo2 size={18} />
@@ -242,14 +242,14 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
                             placeholder="Body text (optional)"
                             value={body}
                             onChange={(e) => setBody(e.target.value)}
-                            className="w-full p-4 border border-[#456882]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B3C53] text-[#1B3C53] placeholder-gray-400 min-h-[250px] resize-none"
+                            className="w-full p-4 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 text-white placeholder-gray-400 min-h-[250px] resize-none"
                         />
                     </div>
 
                     {/* Uploaded Files Preview */}
                     {uploadedFiles.length > 0 && (
                         <div className="space-y-2">
-                            <h4 className="text-sm font-medium text-[#1B3C53]">Uploaded Files ({uploadedFiles.length})</h4>
+                            <h4 className="text-sm font-medium text-white">Uploaded Files ({uploadedFiles.length})</h4>
                             <div className="grid grid-cols-2 gap-3">
                                 {uploadedFiles.map((file, idx) => (
                                     <div key={idx} className="relative group">
@@ -277,16 +277,16 @@ const CreatePostModal = ({ isOpen, onClose, onPostCreated }) => {
                     )}
 
                     {/* Buttons */}
-                    <div className="flex gap-3 justify-end pt-4 border-t border-gray-200">
+                    <div className="flex gap-3 justify-end pt-4 border-t border-white/20">
                         <button
                             onClick={onClose}
-                            className="px-6 py-2 bg-gray-200 text-gray-700 rounded-full font-medium hover:bg-gray-300 transition-colors"
+                            className="px-6 py-2 bg-white/10 text-gray-300 rounded-full font-medium hover:bg-white/20 transition-colors border border-white/20"
                         >
                             Save Draft
                         </button>
                         <button
                             onClick={handlePost}
-                            className="px-6 py-2 bg-[#1B3C53] text-white rounded-full font-medium hover:bg-[#234C68] transition-colors"
+                            className="px-6 py-2 bg-gradient-to-r from-cyan-400 to-purple-400 text-white rounded-full font-medium hover:shadow-lg transition-all"
                         >
                             Post
                         </button>
