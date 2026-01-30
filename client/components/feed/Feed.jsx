@@ -88,7 +88,7 @@ const RedditPostCard = ({ post, onInteraction, onThoughtsClick }) => {
                 </div>
 
                 <div onClick={onThoughtsClick} className="cursor-pointer group/content">
-                    <h3 className="text-lg md:text-xl font-medium text-gray-100 mb-4 leading-relaxed group-hover/content:text-white transition-colors">
+                    <h3 className="text-lg md:text-xl font-medium text-gray-100 mb-4 leading-relaxed group-hover/content:text-white transition-colors break-words">
                         {post.content || post.caption}
                     </h3>
 
@@ -100,7 +100,7 @@ const RedditPostCard = ({ post, onInteraction, onThoughtsClick }) => {
                     )}
                 </div>
 
-                <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/5">
+                <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/5 flex-wrap">
                     <button
                         onClick={handleSpark}
                         className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${userChoice === 'spark' ? 'bg-yellow-500/20 text-yellow-400 ring-1 ring-yellow-500/50' : 'hover:bg-white/5 text-gray-400 hover:text-yellow-400'}`}

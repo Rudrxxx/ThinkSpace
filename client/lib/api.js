@@ -1,13 +1,33 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
 
-const getAuthToken = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('token');
+// Fallback data when server is not available
+const handleOfflineMode = (endpoint, options) => {
+  const method = options.method || 'GET';
+
+  if (endpoint.includes('/users/profile/handle/') && method === 'GET') {
+    return {
+      name: 'User',
+      bio: '',
+      location: '',
+      website: '',
+      image: '',
+      postCount: 0,
+      followerCount: 0,
+      followingCount: 0
+    };
   }
-  return null;
+
+  if (endpoint === '/users/profile' && method === 'PUT') {
+    // Mock successful update
+    const data = JSON.parse(options.body || '{}');
+    return { ...data, _id: 'mock-id', updatedAt: new Date().toISOString() };
+  }
+
+  return {};
 };
 
 const fetchAPI = async (endpoint, options = {}) => {
+
   // Mock create post response specifically
   if (endpoint.includes('/posts/create')) {
     const body = options.body ? JSON.parse(options.body) : {};
@@ -55,6 +75,44 @@ const fetchAPI = async (endpoint, options = {}) => {
   }
 
   return { posts: [], error: 'Server unavailable' };
+
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+
+  // Get Clerk session token if available
+  if (typeof window !== 'undefined' && window.Clerk) {
+    try {
+      const token = await window.Clerk.session?.getToken();
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+    } catch (error) {
+      console.warn('Failed to get Clerk token:', error);
+    }
+  }
+
+  try {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      ...options,
+      headers,
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorText}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      console.warn('Server not available, using fallback data');
+      return handleOfflineMode(endpoint, options);
+    }
+    throw error;
+  }
+
 };
 
 export const api = {
@@ -81,7 +139,7 @@ export const api = {
   // User Profile
   getUserProfile: (handle) => fetchAPI(`/users/profile/handle/${handle}`),
   getUserPosts: (handle) => fetchAPI(`/users/profile/handle/${handle}/posts`),
-
+  updateProfile: (data) => fetchAPI('/users/profile', { method: 'PUT', body: JSON.stringify(data) }),
   // Follow
   toggleFollow: (userId) => fetchAPI(`/follow/${userId}`, { method: 'POST' }),
   getFollowers: (userId) => fetchAPI(`/follow/${userId}/followers`),

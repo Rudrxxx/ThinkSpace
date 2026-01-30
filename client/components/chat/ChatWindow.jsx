@@ -18,9 +18,10 @@ const ChatWindow = ({ conversation, onBack }) => {
     const messagesContainerRef = useRef(null);
 
     // Get other participant
-    const otherParticipantId = conversation?.participants?.find(
-        (p) => p !== user?.id
+    const otherParticipant = conversation?.participants?.find(
+        (p) => (typeof p === 'object' ? p._id : p) !== user?.id
     );
+    const otherParticipantId = typeof otherParticipant === 'object' ? otherParticipant?._id : otherParticipant;
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -88,7 +89,7 @@ const ChatWindow = ({ conversation, onBack }) => {
         <div className="flex-1 flex flex-col bg-white">
             <ChatHeader
                 conversation={conversation}
-                otherParticipant={{ name: `User ${otherParticipantId?.slice(-4)}` }}
+                otherParticipant={{ name: otherParticipant?.name || `User ${String(otherParticipantId).slice(-4)}` }}
                 onBack={onBack}
             />
 

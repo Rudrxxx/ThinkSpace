@@ -71,13 +71,13 @@ export default function CreatePost({ onPostCreated }) {
 
             <form onSubmit={handleSubmit} className="relative z-10">
                 <div className="flex gap-4">
-                    <div className="flex-1">
+                    <div className="flex-1 bg-black/20 rounded-xl px-4 py-2">
                         <motion.textarea
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             onFocus={() => setIsExpanded(true)}
                             placeholder="What's sparking in your mind? ✨"
-                            className="w-full bg-transparent border-none focus:ring-0 text-lg text-white placeholder:text-gray-500 resize-none transition-all duration-300"
+                            className="w-full bg-transparent border-none focus:ring-0 text-lg text-white placeholder:text-gray-400 resize-none transition-all duration-300"
                             animate={{
                                 height: isExpanded ? 128 : 56,
                             }}
