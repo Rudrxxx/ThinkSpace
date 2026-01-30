@@ -145,12 +145,12 @@ const Stories = () => {
                             className="flex-shrink-0 cursor-pointer"
                             onClick={() => setSelectedStory(userStories[userStories.length - 1])}
                         >
-                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-primary)] to-[var(--color-primary)] p-[3px]">
+                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 via-purple-400 to-cyan-400 p-[3px]">
                                 <div className="w-full h-full rounded-full bg-white p-[2px]">
                                     <img src={user?.imageUrl || "https://ui-avatars.com/api/?name=You"} alt="Your story" className="w-full h-full rounded-full object-cover" />
                                 </div>
                             </div>
-                            <p className="text-xs text-center mt-2 text-slate-600 font-medium">Your Story</p>
+                            <p className="text-xs text-center mt-2 text-white font-medium">Your Story</p>
                         </motion.div>
                     ) : (
                         <motion.div
@@ -160,16 +160,16 @@ const Stories = () => {
                             onClick={() => setShowUpload(true)}
                         >
                             <div className="relative">
-                                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-primary)] p-[3px]">
+                                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-purple-400 p-[3px]">
                                     <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
                                         <img src={user?.imageUrl || "https://ui-avatars.com/api/?name=You"} alt="Your story" className="w-full h-full rounded-full object-cover" />
                                     </div>
                                 </div>
-                                <div className="absolute bottom-0 right-0 w-6 h-6 bg-[var(--color-primary)] rounded-full flex items-center justify-center border-2 border-white">
+                                <div className="absolute bottom-0 right-0 w-6 h-6 bg-cyan-400 rounded-full flex items-center justify-center border-2 border-white">
                                     <Plus className="h-4 w-4 text-white" />
                                 </div>
                             </div>
-                            <p className="text-xs text-center mt-2 text-slate-600 font-medium">Your Story</p>
+                            <p className="text-xs text-center mt-2 text-white font-medium">Your Story</p>
                         </motion.div>
                     )}
 
@@ -181,12 +181,12 @@ const Stories = () => {
                             className="flex-shrink-0 cursor-pointer"
                             onClick={() => setSelectedStory(story)}
                         >
-                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-primary)] to-[var(--color-primary)] p-[3px]">
+                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 via-purple-400 to-cyan-400 p-[3px]">
                                 <div className="w-full h-full rounded-full bg-white p-[2px]">
                                     <img src={story.user.avatar} alt={story.user.name} className="w-full h-full rounded-full object-cover" />
                                 </div>
                             </div>
-                            <p className="text-xs text-center mt-2 text-slate-600 font-medium truncate w-20">{story.user.name}</p>
+                            <p className="text-xs text-center mt-2 text-white font-medium truncate w-20">{story.user.name}</p>
                         </motion.div>
                     ))}
                 </div>
@@ -216,13 +216,13 @@ const Stories = () => {
                             initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
-                            className="bg-white rounded-2xl p-6 max-w-md w-full mx-4"
+                            className="ultra-glass rounded-2xl p-6 max-w-md w-full mx-4 border border-white/20"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex justify-between items-center mb-4">
-                                <h3 className="text-xl font-bold text-slate-800">Add to Story</h3>
+                                <h3 className="text-xl font-bold text-white">Add to Story</h3>
                                 <button onClick={() => { setShowUpload(false); setUploadedImage(null); }}>
-                                    <X className="h-6 w-6 text-slate-600" />
+                                    <X className="h-6 w-6 text-gray-400 hover:text-white" />
                                 </button>
                             </div>
                             
@@ -237,23 +237,23 @@ const Stories = () => {
                                     </button>
                                 </div>
                             ) : (
-                                <label className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-[var(--color-primary)] transition-colors cursor-pointer block">
+                                <label className="border-2 border-dashed border-white/30 rounded-xl p-8 text-center hover:border-cyan-400 transition-colors cursor-pointer block">
                                     <input 
                                         type="file" 
                                         accept="image/*" 
                                         onChange={handleFileSelect}
                                         className="hidden"
                                     />
-                                    <Plus className="h-12 w-12 text-slate-400 mx-auto mb-2" />
-                                    <p className="text-slate-600">Click to upload image</p>
-                                    <p className="text-xs text-slate-400 mt-1">JPG, PNG up to 10MB</p>
+                                    <Plus className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+                                    <p className="text-gray-300">Click to upload image</p>
+                                    <p className="text-xs text-gray-500 mt-1">JPG, PNG up to 10MB</p>
                                 </label>
                             )}
                             
                             <button 
                                 onClick={handleShareStory}
                                 disabled={!uploadedImage}
-                                className="w-full mt-4 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary)] text-white rounded-xl font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full mt-4 py-3 bg-gradient-to-r from-cyan-400 to-purple-400 text-white rounded-xl font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 Share Story
                             </button>

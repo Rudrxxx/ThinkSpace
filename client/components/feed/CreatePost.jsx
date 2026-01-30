@@ -65,18 +65,21 @@ export default function CreatePost({ onPostCreated }) {
     };
 
     return (
-        <GlassCard className="mb-8 transition-all duration-300">
-            <form onSubmit={handleSubmit}>
+        <div className="glass-panel p-6 rounded-2xl mb-8 border border-white/5 shadow-xl shadow-black/10 relative overflow-hidden group">
+            {/* Background Gradient Effect */}
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-primary opacity-50 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+            <form onSubmit={handleSubmit} className="relative z-10">
                 <div className="flex gap-4">
-                    <div className="flex-1">
+                    <div className="flex-1 bg-black/20 rounded-xl px-4 py-2">
                         <motion.textarea
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
                             onFocus={() => setIsExpanded(true)}
-                            placeholder="Share your thoughts..."
-                            className="w-full bg-transparent border-none focus:ring-0 text-slate-700 placeholder:text-slate-400 resize-none transition-all duration-300"
+                            placeholder="What's sparking in your mind? ✨"
+                            className="w-full bg-transparent border-none focus:ring-0 text-lg text-white placeholder:text-gray-400 resize-none transition-all duration-300"
                             animate={{
-                                height: isExpanded ? 128 : 48,
+                                height: isExpanded ? 128 : 56,
                             }}
                             transition={{
                                 type: "spring",
@@ -90,7 +93,7 @@ export default function CreatePost({ onPostCreated }) {
                 <AnimatePresence>
                     {isExpanded && (
                         <motion.div
-                            className="mt-4 pt-4 border-t border-[var(--color-primary)]/30"
+                            className="mt-4 pt-4 border-t border-white/10"
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: "auto" }}
                             exit={{ opacity: 0, height: 0 }}
@@ -100,11 +103,11 @@ export default function CreatePost({ onPostCreated }) {
                                 <div className="flex items-center gap-4">
                                     <motion.button
                                         type="button"
-                                        className="p-2 text-slate-400 hover:text-[var(--color-primary)] transition-colors rounded-full hover:bg-[var(--color-primary)]/10"
+                                        className="p-2 text-primary hover:text-white transition-colors rounded-full hover:bg-white/10"
                                         whileHover={{ scale: 1.1, rotate: 15 }}
                                         whileTap={{ scale: 0.9 }}
                                     >
-                                        <ImageIcon size={20} />
+                                        <ImageIcon size={22} />
                                     </motion.button>
 
                                     {/* Character count */}
@@ -124,7 +127,7 @@ export default function CreatePost({ onPostCreated }) {
                                                     cx="16"
                                                     cy="16"
                                                     r="14"
-                                                    stroke="#e2e8f0"
+                                                    stroke="rgba(255,255,255,0.1)"
                                                     strokeWidth="2"
                                                     fill="none"
                                                 />
@@ -143,7 +146,7 @@ export default function CreatePost({ onPostCreated }) {
                                                     transition={{ duration: 0.3 }}
                                                 />
                                             </svg>
-                                            <span className={`absolute inset-0 flex items-center justify-center text-xs font-medium ${charPercentage > 90 ? 'text-red-500' : 'text-slate-500'}`}>
+                                            <span className={`absolute inset-0 flex items-center justify-center text-[10px] font-bold ${charPercentage > 90 ? 'text-red-500' : 'text-gray-500'}`}>
                                                 {maxChars - charCount}
                                             </span>
                                         </motion.div>
@@ -153,20 +156,9 @@ export default function CreatePost({ onPostCreated }) {
                                 <motion.button
                                     type="submit"
                                     disabled={isLoading || !content.trim() || charCount > maxChars}
-                                    className="flex items-center gap-2 px-6 py-2 bg-[var(--color-primary)] text-white rounded-full font-medium hover:bg-[var(--color-primary)]/80 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg relative overflow-hidden"
+                                    className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-primary to-secondary text-white rounded-full font-bold hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    animate={!isLoading && content.trim() ? {
-                                        boxShadow: [
-                                            "0 4px 6px -1px rgba(25, 149, 173, 0.1)",
-                                            "0 10px 15px -3px rgba(25, 149, 173, 0.3)",
-                                            "0 4px 6px -1px rgba(25, 149, 173, 0.1)",
-                                        ]
-                                    } : {}}
-                                    transition={{
-                                        duration: 2,
-                                        repeat: Infinity,
-                                    }}
                                 >
                                     <AnimatePresence mode="wait">
                                         {isLoading ? (
@@ -176,7 +168,7 @@ export default function CreatePost({ onPostCreated }) {
                                                 animate={{ opacity: 1 }}
                                                 exit={{ opacity: 0 }}
                                             >
-                                                <Loader2 size={18} className="animate-spin" />
+                                                <Loader2 size={18} className="animate-spin text-black" />
                                             </motion.div>
                                         ) : showSuccess ? (
                                             <motion.div
@@ -185,7 +177,7 @@ export default function CreatePost({ onPostCreated }) {
                                                 animate={{ scale: 1 }}
                                                 exit={{ scale: 0 }}
                                             >
-                                                <CheckCircle size={18} />
+                                                <CheckCircle size={18} className="text-black" />
                                             </motion.div>
                                         ) : (
                                             <motion.div
@@ -195,8 +187,8 @@ export default function CreatePost({ onPostCreated }) {
                                                 animate={{ opacity: 1 }}
                                                 exit={{ opacity: 0 }}
                                             >
-                                                <span>Post</span>
-                                                <Send size={18} />
+                                                <span className="text-black">Post</span>
+                                                <Send size={18} className="text-black" />
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
@@ -206,6 +198,6 @@ export default function CreatePost({ onPostCreated }) {
                     )}
                 </AnimatePresence>
             </form>
-        </GlassCard>
+        </div>
     );
 }

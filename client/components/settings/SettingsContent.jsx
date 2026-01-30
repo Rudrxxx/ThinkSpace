@@ -36,7 +36,7 @@ const SettingsContent = ({ user }) => {
                     });
                     return;
                 }
-                
+
                 // Try API if no local data
                 const handle = user.username || user.firstName?.toLowerCase();
                 const profile = await api.getUserProfile(handle);
@@ -74,21 +74,21 @@ const SettingsContent = ({ user }) => {
                 ...profileData,
                 handle: user.username || user.firstName?.toLowerCase()
             };
-            
+
             // Try API first
             await api.updateProfile(updateData);
-            
+
             // Save to localStorage as backup
             localStorage.setItem(`profile_${user.username || user.firstName}`, JSON.stringify(profileData));
-            
+
             setMessage("Profile updated successfully!");
             setTimeout(() => setMessage(""), 3000);
         } catch (error) {
             console.warn('API failed, saving locally:', error.message);
-            
+
             // Save to localStorage if API fails
             localStorage.setItem(`profile_${user.username || user.firstName}`, JSON.stringify(profileData));
-            
+
             if (error.message.includes('server')) {
                 setMessage("Profile saved locally. Changes will sync when server is available.");
             } else {
@@ -109,7 +109,7 @@ const SettingsContent = ({ user }) => {
                     transition={{ duration: 0.5 }}
                 >
                     <h1 className="text-3xl font-bold text-slate-900 mb-8">Settings</h1>
-                    
+
                     <GlassCard className="p-8">
                         <div className="flex items-center gap-4 mb-8">
                             <User className="text-[var(--color-primary)]" size={24} />
@@ -236,11 +236,10 @@ const SettingsContent = ({ user }) => {
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className={`mt-6 p-4 rounded-lg ${
-                                    message.includes('success') 
-                                        ? 'bg-green-50 text-green-700 border border-green-200' 
+                                className={`mt-6 p-4 rounded-lg ${message.includes('success')
+                                        ? 'bg-green-50 text-green-700 border border-green-200'
                                         : 'bg-red-50 text-red-700 border border-red-200'
-                                }`}
+                                    }`}
                             >
                                 {message}
                             </motion.div>

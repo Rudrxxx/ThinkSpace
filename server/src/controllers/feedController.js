@@ -5,9 +5,19 @@ import Space from '../models/Space.js';
 export const getHomeFeed = async (req, res) => {
   try {
     const userId = req.userId;
+
+    // If no userId (unauthenticated), return all recent posts
+    if (!userId) {
+      const posts = await Post.find()
+        .populate('user', 'name handle image')
+        .sort({ createdAt: -1 })
+        .limit(50);
+      return res.json({ posts });
+    }
+
     const following = await Follow.find({ followerId: userId }).select('followingId');
     const followingIds = following.map(f => f.followingId);
-    
+
     const joinedSpaces = await Space.find({ members: userId }).select('_id');
     const spaceIds = joinedSpaces.map(s => s._id);
 
@@ -23,7 +33,7 @@ export const getHomeFeed = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(50);
 
-    res.json(posts);
+    res.json({ posts });
   } catch (error) {
     res.status(500).json({ message: 'Error fetching feed', error: error.message });
   }

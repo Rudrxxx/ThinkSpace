@@ -7,9 +7,10 @@ import { cn } from "@/lib/utils";
 
 const ConversationItem = ({ conversation, isActive, onClick, currentUserId }) => {
     // Get other participant
-    const otherParticipantId = conversation.participants?.find(
-        (p) => p !== currentUserId
+    const otherParticipant = conversation.participants?.find(
+        (p) => p._id !== currentUserId
     );
+    const otherParticipantId = otherParticipant?._id || otherParticipant;
 
     const lastMessageTime = conversation.lastMessageAt
         ? formatDistanceToNow(new Date(conversation.lastMessageAt), {
@@ -34,7 +35,7 @@ const ConversationItem = ({ conversation, isActive, onClick, currentUserId }) =>
         >
             <div className="relative flex-shrink-0">
                 <div className="w-14 h-14 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white font-semibold text-lg">
-                    {`U${otherParticipantId?.slice(-2)}` || "U"}
+                    {otherParticipantId ? `U${String(otherParticipantId).slice(-2)}` : "U"}
                 </div>
                 {hasUnread && (
                     <div className="absolute top-0 right-0 w-3 h-3 bg-[var(--color-primary)] border-2 border-white rounded-full"></div>
@@ -49,7 +50,7 @@ const ConversationItem = ({ conversation, isActive, onClick, currentUserId }) =>
                             hasUnread ? "text-slate-900" : "text-slate-700"
                         )}
                     >
-                        User {otherParticipantId?.slice(-4)}
+                        {otherParticipant?.name || (otherParticipantId ? `User ${String(otherParticipantId).slice(-4)}` : 'Unknown')}
                     </h4>
                     <span className="text-xs text-slate-400 flex-shrink-0 ml-2">
                         {lastMessageTime}

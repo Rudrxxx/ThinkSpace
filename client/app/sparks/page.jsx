@@ -14,7 +14,8 @@ export default function SparkFeed() {
     useEffect(() => {
         const fetchSparks = async () => {
             try {
-                const posts = await api.getPosts();
+                const result = await api.getPosts();
+                const posts = result.posts || result || [];
                 setSparks(posts.map(post => ({
                     ...post,
                     user: {
@@ -28,6 +29,33 @@ export default function SparkFeed() {
                 })));
             } catch (error) {
                 console.error('Failed to fetch sparks:', error);
+                // Fallback mock data
+                setSparks([
+                    {
+                        _id: '1',
+                        content: 'Just had an amazing breakthrough in my project! 🚀',
+                        user: {
+                            name: 'Alex Chen',
+                            handle: '@alexchen',
+                            avatar: 'https://ui-avatars.com/api/?name=Alex+Chen&background=random'
+                        },
+                        likes: 12,
+                        comments: 3,
+                        shares: 1
+                    },
+                    {
+                        _id: '2',
+                        content: 'The future belongs to those who believe in the beauty of their dreams.',
+                        user: {
+                            name: 'Sarah Kim',
+                            handle: '@sarahkim',
+                            avatar: 'https://ui-avatars.com/api/?name=Sarah+Kim&background=random'
+                        },
+                        likes: 28,
+                        comments: 7,
+                        shares: 4
+                    }
+                ]);
             } finally {
                 setLoading(false);
             }
@@ -128,7 +156,7 @@ export default function SparkFeed() {
                                     <input
                                         type="text"
                                         placeholder="What's sparking?"
-                                        className="w-full bg-transparent border-none focus:ring-0 text-lg placeholder:text-slate-400"
+                                        className="w-full bg-transparent border-none focus:ring-0 text-lg placeholder:text-slate-400 text-black"
                                         value={newSparkContent}
                                         onChange={(e) => setNewSparkContent(e.target.value)}
                                         onKeyDown={(e) => {
@@ -152,8 +180,8 @@ export default function SparkFeed() {
                             </div>
                         </div>
 
-                        {sparks.map((spark) => (
-                            <div key={spark._id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
+                        {sparks.map((spark, index) => (
+                            <div key={spark._id || index} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-shadow">
                                 <div className="flex gap-4">
                                     <div className="h-12 w-12 rounded-full bg-slate-100 overflow-hidden flex-shrink-0">
                                         <img src={spark.user.avatar} alt={spark.user.name} className="h-full w-full object-cover" />

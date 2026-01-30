@@ -19,8 +19,13 @@ const PostGrid = () => {
             try {
                 const handle = user?.username || user?.firstName?.toLowerCase();
                 if (handle) {
+
+                    const response = await api.getUserPosts(handle);
+                    setPosts(response?.posts || []);
+
                     const userPosts = await api.getUserPosts(handle);
                     setPosts(Array.isArray(userPosts) ? userPosts : []);
+
                 }
             } catch (error) {
                 console.error('Failed to fetch posts:', error);
@@ -36,8 +41,8 @@ const PostGrid = () => {
         if (!selectedPost || !text) return;
         try {
             await api.createComment(selectedPost._id, text);
-            setPosts(prev => prev.map(p => 
-                p._id === selectedPost._id 
+            setPosts(prev => prev.map(p =>
+                p._id === selectedPost._id
                     ? { ...p, commentCount: (p.commentCount || 0) + 1 }
                     : p
             ));
@@ -50,8 +55,8 @@ const PostGrid = () => {
         try {
             if (type === 'spark') {
                 await api.likePost(postId);
-                setPosts(prev => prev.map(p => 
-                    p._id === postId 
+                setPosts(prev => prev.map(p =>
+                    p._id === postId
                         ? { ...p, likes: [...(p.likes || []), 'temp'] }
                         : p
                 ));
@@ -79,41 +84,66 @@ const PostGrid = () => {
                         className="group relative aspect-[4/3] overflow-hidden cursor-pointer rounded-3xl border-0 shadow-md"
                     >
                         {post.media?.[0] || post.image ? (
-                            <img
-                                src={post.media?.[0] || post.image}
-                                alt="Post"
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            />
+                            <>
+                                <img
+                                    src={post.media?.[0] || post.image}
+                                    alt="Post"
+                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90" />
+
+                                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                                    <div className="flex items-center gap-2 mb-2 opacity-80">
+                                        <img src={post.user?.imageUrl || post.user?.avatar || `https://ui-avatars.com/api/?name=${post.user?.name}`} alt={post.user?.name} className="w-6 h-6 rounded-full border border-white/50" />
+                                        <span className="text-xs font-medium">{post.user?.name || 'Anonymous'}</span>
+                                    </div>
+                                    <h3 className="text-lg font-bold leading-tight mb-3 line-clamp-2">{post.content || post.title}</h3>
+
+                                    <div className="flex items-center gap-4 text-sm opacity-80">
+                                        <div className="flex items-center gap-1.5">
+                                            <Zap size={16} className="fill-white/20" />
+                                            <span>{post.likes?.length || 0}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <Brain size={16} className="fill-white/20" />
+                                            <span>{post.commentCount || 0}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <CornerUpRight size={16} className="fill-white/20" />
+                                            <span>{post.shares || 0}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
                         ) : (
-                            <div className="w-full h-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-accent)] flex items-center justify-center">
-                                <p className="text-white text-center p-6">{post.content?.substring(0, 100)}</p>
+                            <div className="w-full h-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-accent)] flex flex-col p-6 relative group-hover:contrast-[1.1] transition-all">
+                                <div className="flex-1 flex items-center justify-center">
+                                    <p className="text-white text-center text-lg md:text-xl font-bold leading-relaxed drop-shadow-md line-clamp-4">
+                                        {post.content || post.title}
+                                    </p>
+                                </div>
+
+                                <div className="relative z-10 pt-4 mt-auto border-t border-white/20">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <img src={post.user?.imageUrl || post.user?.avatar || `https://ui-avatars.com/api/?name=${post.user?.name}`} alt={post.user?.name} className="w-6 h-6 rounded-full border border-white/50" />
+                                            <span className="text-xs font-medium text-white/90">{post.user?.name || 'Anonymous'}</span>
+                                        </div>
+
+                                        <div className="flex items-center gap-3 text-sm text-white/90">
+                                            <div className="flex items-center gap-1">
+                                                <Zap size={14} className="fill-white/20" />
+                                                <span>{post.likes?.length || 0}</span>
+                                            </div>
+                                            <div className="flex items-center gap-1">
+                                                <Brain size={14} className="fill-white/20" />
+                                                <span>{post.commentCount || 0}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         )}
-
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90" />
-
-                        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                            <div className="flex items-center gap-2 mb-2 opacity-80">
-                                <img src={post.user?.imageUrl || post.user?.avatar || `https://ui-avatars.com/api/?name=${post.user?.name}`} alt={post.user?.name} className="w-6 h-6 rounded-full border border-white/50" />
-                                <span className="text-xs font-medium">{post.user?.name || 'Anonymous'}</span>
-                            </div>
-                            <h3 className="text-lg font-bold leading-tight mb-3 line-clamp-2">{post.content || post.title}</h3>
-
-                            <div className="flex items-center gap-4 text-sm opacity-80">
-                                <div className="flex items-center gap-1.5">
-                                    <Zap size={16} className="fill-white/20" />
-                                    <span>{post.likes?.length || 0}</span>
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                    <Brain size={16} className="fill-white/20" />
-                                    <span>{post.commentCount || 0}</span>
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                    <CornerUpRight size={16} className="fill-white/20" />
-                                    <span>{post.shares || 0}</span>
-                                </div>
-                            </div>
-                        </div>
                     </GlassCard>
                 ))}
             </div>

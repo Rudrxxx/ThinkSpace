@@ -4,7 +4,7 @@ import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/home', protect, getHomeFeed);
+router.get('/home', getHomeFeed);
 router.get('/explore', getExploreFeed);
 
 export default router;

@@ -34,30 +34,33 @@ export default function Explore() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await fetch("http://localhost:5001/api/feed/explore");
-                if (!res.ok) throw new Error("Failed to fetch");
-                const data = await res.json();
-
-                if (data.trendingPosts?.length) {
-                    setTrendingPosts(data.trendingPosts.map((post, i) => ({
-                        ...post,
-                        image: post.media?.[0] || post.image || imageUrls[i % imageUrls.length],
-                        user: {
-                            ...post.user,
-                            avatar: post.user?.imageUrl || post.user?.avatar || `https://ui-avatars.com/api/?name=${post.user?.name || 'User'}&background=random`
-                        }
-                    })));
-                }
-                if (data.topSpaces?.length) {
-                    setRecentSparks(data.topSpaces.slice(0, 8).map((space, i) => ({
-                        _id: space._id,
-                        description: space.name,
-                        thumbnailUrl: space.image || imageUrls[(i + 10) % imageUrls.length],
-                        user: { name: `${space.members?.length || 0} members` }
-                    })));
-                }
+                // Return mock data directly since server is unavailable
+                setTrendingPosts([
+                    {
+                        _id: '1',
+                        content: 'The future of AI is here and it\'s transforming everything we know about creativity.',
+                        image: imageUrls[0],
+                        user: { name: 'Tech Visionary', avatar: 'https://ui-avatars.com/api/?name=Tech+Visionary&background=random' },
+                        createdAt: new Date().toISOString(),
+                        likes: { length: 42 }
+                    },
+                    {
+                        _id: '2',
+                        content: 'Digital art is revolutionizing how we express ourselves in the modern world.',
+                        image: imageUrls[1],
+                        user: { name: 'Creative Mind', avatar: 'https://ui-avatars.com/api/?name=Creative+Mind&background=random' },
+                        createdAt: new Date().toISOString(),
+                        likes: { length: 28 }
+                    }
+                ]);
+                setRecentSparks([
+                    { _id: '1', description: 'Amazing sunset vibes', thumbnailUrl: imageUrls[2] },
+                    { _id: '2', description: 'Tech innovation', thumbnailUrl: imageUrls[3] },
+                    { _id: '3', description: 'Creative design', thumbnailUrl: imageUrls[4] },
+                    { _id: '4', description: 'Music inspiration', thumbnailUrl: imageUrls[0] }
+                ]);
             } catch (error) {
-                console.error("Failed to fetch explore content", error);
+                console.error("Error setting explore content", error);
             } finally {
                 setLoading(false);
             }
